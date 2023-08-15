@@ -1,68 +1,107 @@
-// iniciar minhas variáveis
-let board = ['', '', '', '', '', '', '', '', ''];
-let playerTime = 0;
-let gameOver = false;
-let draw = false;
-let symbols = ['O', 'X'];
-let winStates = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-]
+let game = {
+    cards: null,
+    lockMode: false,
+    firstCard: null,
+    secondCard: null,
 
-function handleMove(position) {
+    techs: [
+        'bootstrap',
+        'css',
+        'electron',
+        'firebase',
+        'html',
+        'javascript',
+        'jquery',
+        'mongo',
+        'node',
+        'react'
+    ],
 
-    if (gameOver == true) {
-        return;
-    }
+    setCard: function (id) {
+        let card = this.cards.filter(card => card.id == id)[0];
 
-    if (board[position] == '') {
-        board[position] = symbols[playerTime];
-
-        gameOver = isWin();
-
-        if (gameOver == false) {
-            playerTime = (playerTime == 0) ? 1 : 0;
+        if (card.flipped || this.lockMode) {
+            return false;
         }
-    }
 
-    return gameOver;
-}
-
-function isWin() {
-
-    for (let i = 0; i < winStates.length; i++) {
-        let seq = winStates[i];
-
-        let pos1 = seq[0];
-        let pos2 = seq[1];
-        let pos3 = seq[2];
-
-        if (board[pos1] == board[pos2] && board[pos1] == board[pos3] && board[pos1] != '') {
+        if (!this.firstCard) {
+            this.firstCard = card;
+            this.firstCard.flipped = true;
+            return true;
+        } else {
+            this.secondCard = card;
+            this.secondCard.flipped = true;
+            this.lockMode = true;
             return true;
         }
-    }
+    },
 
-    return false;
-}
 
-function isDraw() {
-    let x = 0;
-    let o = 0;
-
-    for (let i in board) {
-        if (board[i] == 'X') {
-            x++;
+    checkMatch: function () {
+        if (!this.firstCard || !this.secondCard) {
+            return false;
         }
-        if (board[i] == 'O') {
-            o++;
+
+        return this.firstCard.icon == this.secondCard.icon;
+    },
+
+    clearCards: function () {
+        this.firstCard = null;
+        this.secondCard = null;
+        this.lockMode = false;
+    },
+
+    unflipCards: function () {
+        this.firstCard.flipped = false;
+        this.secondCard.flipped = false;
+        this.clearCards();
+    },
+
+    checkGameOver: function () {
+        if (this.cards.filter(card => !card.flipped).length == 0) {
+            this.moveCount = 0;
+            return true;
+        }
+    },
+
+    createCards: function () {
+        this.cards = [];
+
+        for (let tech of this.techs) {
+            this.cards.push(this.createPair(tech));
+        }
+
+        this.cards = this.cards.flatMap(pair => pair);
+        this.shuffleCards();
+
+        return this.cards;
+    },
+
+    createPair: function (tech) {
+        return [{
+            id: this.createId(tech),
+            icon: tech,
+            flipped: false
+        }, {
+            id: this.createId(tech),
+            icon: tech,
+            flipped: false
+        }]
+    },
+
+    createId: function (tech) {
+        return tech + parseInt(Math.random() * 1000);
+    },
+
+    shuffleCards: function (cards) {
+        let currentIndex = this.cards.length;
+        let randomIndex = 0;
+
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            [this.cards[randomIndex], this.cards[currentIndex]] = [this.cards[currentIndex], this.cards[randomIndex]];
         }
     }
-
-    return x + o == 9 && isWin() == false ? true : false;
 }
