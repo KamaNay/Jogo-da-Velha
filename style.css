@@ -1,0 +1,77 @@
+body {
+    display: flex;
+    justify-content: center;
+    background-color:burlywood;
+}
+
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#table{
+    text-align: center;
+    width: 50%;
+    padding: 10px;
+    border: 3px solid black;
+    border-radius: 10px;
+    background-color: lightslategray;
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    background-color: beige;
+    border: 1px solid gray;
+    display: inline-block;
+}
+
+.O {
+    position: relative;
+}
+
+.O:after {
+    position: absolute;
+    content: "\2694";
+    font-size: 50px;
+    line-height: 100px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.X {
+    position: relative;
+}
+
+.X:after {
+    position: absolute;
+    content: "\1F6E1";
+    font-size: 50px;
+    line-height: 100px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.player {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+
+#shield, #sword {
+    display: inline-block;
+}
+
+#botao {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin-top: 10px;
+    border-radius: 6px;
+    background-color: lightblue;
+}
+
+#botao:hover{
+    background-color: lightcyan;
+}
